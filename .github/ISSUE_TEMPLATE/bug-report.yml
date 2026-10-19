@@ -1,0 +1,26 @@
+name: Foutmelding
+description: Iets op de site werkt niet zoals verwacht
+title: "[fout] "
+labels: ["bug"]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Adres van de pagina
+    validations:
+      required: true
+  - type: textarea
+    id: stappen
+    attributes:
+      label: Wat deed je, en wat gebeurde er?
+    validations:
+      required: true
+  - type: textarea
+    id: verwacht
+    attributes:
+      label: Wat verwachtte je?
+  - type: input
+    id: omgeving
+    attributes:
+      label: Browser en apparaat
+      placeholder: bijv. Firefox 131 op Windows, Safari op iPhone

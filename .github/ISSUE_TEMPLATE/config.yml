@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Persoonsgegevens (correctie of verwijdering)
+    url: mailto:info@rijksmap.nl
+    about: Sta je zelf op de Rijksmap? Mail dan in plaats van een openbaar issue te maken.

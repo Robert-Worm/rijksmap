@@ -1,0 +1,45 @@
+name: Datacorrectie
+description: Iets in de data klopt niet, ontbreekt of is verouderd
+title: "[data] "
+labels: ["data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Dank je! Correcties gebeuren alleen op basis van een officiële bron, dus vermeld die alsjeblieft.
+        Gaat het over jezelf als persoon? Mail dan naar info@rijksmap.nl in plaats van een openbaar issue.
+  - type: dropdown
+    id: soort
+    attributes:
+      label: Wat voor fout?
+      options:
+        - Rapport bij het verkeerde ministerie of onderdeel
+        - Risicolabel past niet of ontbreekt
+        - Samenvatting of metadata (datum, titel, auteur) onjuist
+        - Persoon of functie verouderd
+        - Organisatieonderdeel ontbreekt of is verouderd
+        - Rapport ontbreekt
+        - Rapport hoort er niet in
+        - Anders
+    validations:
+      required: true
+  - type: input
+    id: waar
+    attributes:
+      label: Rapport of pagina
+      description: Titel, of het adres op rijksmap.nl
+    validations:
+      required: true
+  - type: textarea
+    id: wat
+    attributes:
+      label: Wat is er mis, en wat moet het zijn?
+    validations:
+      required: true
+  - type: input
+    id: bron
+    attributes:
+      label: Officiële bron
+      description: Link naar de officiële publicatie die de juiste informatie laat zien
+    validations:
+      required: true
