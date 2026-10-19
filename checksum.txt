@@ -1,0 +1,2 @@
+SHA-256 van index.html (deze release):
+b95e496dcb4e4fc410ea54b0fa84f342653e9d7bd24e646d418e6299af09d6e4
