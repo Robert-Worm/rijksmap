@@ -1,16 +1,28 @@
-# Rijksmap
+<h1 align="center">Rijksmap</h1>
 
-**De rijksoverheid in kaart.** De Rijksmap laat in één overzicht zien hoe de Nederlandse rijksoverheid is opgebouwd, wie haar leidt, en wat auditors, inspecties en onderzoekers er sinds 2019 over hebben gerapporteerd.
+<p align="center">
+  <a href="https://www.rijksmap.nl"><img src="docs/afbeeldingen/rijksmap-banner.png" alt="Rijksmap: de rijksoverheid in kaart" width="820"></a>
+</p>
 
-[![Website](https://img.shields.io/website?url=https%3A%2F%2Fwww.rijksmap.nl&label=rijksmap.nl&up_message=online&down_message=offline)](https://www.rijksmap.nl)
-[![Release](https://img.shields.io/github/v/release/Robert-Worm/rijksmap?label=release)](https://github.com/Robert-Worm/rijksmap/releases/latest)
-[![Rapporten](https://img.shields.io/badge/rapporten-9.116-154273)](https://www.rijksmap.nl/rijksmap-rapporten.csv)
-[![Data: CC0](https://img.shields.io/badge/data-CC0%201.0-01689b)](https://creativecommons.org/publicdomain/zero/1.0/)
-[![Code: PolyForm Noncommercial](https://img.shields.io/badge/code-PolyForm%20Noncommercial-555)](LICENSE.md)
+<p align="center">
+  Hoe is de Nederlandse rijksoverheid opgebouwd, wie leidt haar, en wat hebben auditors,<br>
+  inspecties en onderzoekers er sinds 2019 over gerapporteerd? Alles op één kaart.
+</p>
 
-**→ Bekijk de kaart op [www.rijksmap.nl](https://www.rijksmap.nl)**
+<p align="center">
+  <a href="https://www.rijksmap.nl"><img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fwww.rijksmap.nl&label=website&up_message=online&up_color=01689b&down_message=offline&style=flat-square&labelColor=15233b"></a>
+  <a href="https://github.com/Robert-Worm/rijksmap/releases/latest"><img alt="Release" src="https://img.shields.io/badge/release-24%20aug%202026-01689b?style=flat-square&labelColor=15233b"></a>
+  <a href="https://www.rijksmap.nl/rijksmap-rapporten.csv"><img alt="Rapporten" src="https://img.shields.io/badge/rapporten-9.116-01689b?style=flat-square&labelColor=15233b"></a>
+  <a href="https://creativecommons.org/publicdomain/zero/1.0/"><img alt="Data: CC0" src="https://img.shields.io/badge/data-CC0%201.0-01689b?style=flat-square&labelColor=15233b"></a>
+  <a href="LICENSE.md"><img alt="Code: PolyForm Noncommercial" src="https://img.shields.io/badge/code-PolyForm%20Noncommercial-01689b?style=flat-square&labelColor=15233b"></a>
+</p>
 
-[![Overzicht van de twaalf ministeries op de Rijksmap](docs/afbeeldingen/rijksmap-overzicht.png)](https://www.rijksmap.nl)
+<p align="center">
+  <a href="https://www.rijksmap.nl"><strong>Bekijk de kaart</strong></a> ·
+  <a href="#open-data">Open data</a> ·
+  <a href="#documentatie">Documentatie</a> ·
+  <a href="#meedoen">Meedoen</a>
+</p>
 
 ---
 
@@ -22,6 +34,8 @@
 - **Zoeken, filteren en exporteren:** op jaar, bron, onderdeel, risicothema of zoekwoord, en elke selectie als Excel, CSV of JSON.
 
 Elk getal en elk label linkt door naar de officiële publicatie.
+
+[![Overzicht van de twaalf ministeries op de Rijksmap](docs/afbeeldingen/rijksmap-overzicht.png)](https://www.rijksmap.nl)
 
 ## Open data
 
