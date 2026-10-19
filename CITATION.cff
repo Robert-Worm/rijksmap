@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "Gebruik je de Rijksmap of de dataset? Vermeld de bron dan graag zo."
+title: "Rijksmap: de rijksoverheid in kaart"
+abstract: >-
+  Interactieve kaart van de Nederlandse rijksoverheid: de twaalf ministeries, hun leiding
+  en organisatie, en ruim 9.000 audit-, toezicht- en onderzoeksrapporten sinds 2019,
+  ingedeeld op de zestien risicocategorieën van Risk in Focus 2026, met open data.
+type: dataset
+authors:
+  - family-names: Worm
+    given-names: Robert
+    email: info@rijksmap.nl
+url: "https://www.rijksmap.nl"
+repository-code: "https://github.com/Robert-Worm/rijksmap"
+license: CC0-1.0
+version: "2026-08-24"
+date-released: "2026-08-24"
+keywords:
+  - rijksoverheid
+  - open data
+  - audit
+  - Auditdienst Rijk
+  - Algemene Rekenkamer
+  - toezicht
+  - Risk in Focus
