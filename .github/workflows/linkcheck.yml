@@ -1,0 +1,73 @@
+name: Linkcontrole
+
+# Controleert of links nog werken.
+# - Elke maandag: alle links in de documentatie.
+# - De eerste van de maand: ook de bronlinks van alle rapporten in de open data,
+#   rustig en met een herkenbare User-Agent, zodat overheidsservers niet worden belast.
+# Werkt iets niet meer, dan opent de controle een issue met de lijst.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      rapporten:
+        description: "Ook de bronlinks van alle rapporten controleren"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bepaal wat er gecontroleerd wordt
+        id: scope
+        run: |
+          if [ "${{ github.event.inputs.rapporten }}" = "true" ] || [ "$(date -u +%d)" -le 07 ] && [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "rapporten=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "rapporten=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Maak de lijst met rapportlinks
+        if: steps.scope.outputs.rapporten == 'true'
+        run: |
+          python3 - <<'PY'
+          import json
+          d = json.load(open("rijksmap-rapporten.json", encoding="utf-8"))
+          urls = sorted({r["url"] for r in d["rapporten"] if r.get("url", "").startswith("http")})
+          open("rapport-links.txt", "w").write("\n".join(urls) + "\n")
+          print(len(urls), "rapportlinks")
+          PY
+
+      - name: Controleer links
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --max-concurrency 2
+            --retry-wait-time 10
+            --max-retries 3
+            --accept 200..=299,403,429
+            --user-agent "Rijksmap-linkcontrole/1.0 (info@rijksmap.nl)"
+            --exclude "^https://github\.com/Robert-Worm/rijksmap/(issues|discussions|releases)"
+            README.md CONTRIBUTING.md CHANGELOG.md ACCESSIBILITY.md SECURITY.md docs/**/*.md
+            ${{ steps.scope.outputs.rapporten == 'true' && 'rapport-links.txt' || '' }}
+          output: linkcontrole.md
+          fail: false
+
+      - name: Meld kapotte links in een issue
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "Linkcontrole: links werken niet meer"
+          content-filepath: linkcontrole.md
+          labels: data
