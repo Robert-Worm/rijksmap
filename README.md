@@ -4,6 +4,8 @@
 
 **→ Bekijk de kaart op [www.rijksmap.nl](https://www.rijksmap.nl)**
 
+[![Overzicht van de twaalf ministeries op de Rijksmap](docs/afbeeldingen/rijksmap-overzicht.png)](https://www.rijksmap.nl)
+
 ---
 
 ## Wat je op de kaart vindt
