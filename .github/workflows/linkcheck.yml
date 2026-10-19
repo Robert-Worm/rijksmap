@@ -58,6 +58,7 @@ jobs:
             --accept 200..=299,403,429
             --user-agent "Rijksmap-linkcontrole/1.0 (info@rijksmap.nl)"
             --exclude "^https://github\.com/Robert-Worm/rijksmap/(issues|discussions|releases)"
+            --exclude "^file://.*/(issues|discussions|releases)"
             README.md CONTRIBUTING.md CHANGELOG.md ACCESSIBILITY.md SECURITY.md docs/**/*.md
             ${{ steps.scope.outputs.rapporten == 'true' && 'rapport-links.txt' || '' }}
           output: linkcontrole.md
@@ -69,4 +70,4 @@ jobs:
         with:
           title: "Linkcontrole: links werken niet meer"
           content-filepath: linkcontrole.md
-          labels: data
+          labels: documentation
