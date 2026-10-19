@@ -2,6 +2,12 @@
 
 **De rijksoverheid in kaart.** De Rijksmap laat in één overzicht zien hoe de Nederlandse rijksoverheid is opgebouwd, wie haar leidt, en wat auditors, inspecties en onderzoekers er sinds 2019 over hebben gerapporteerd.
 
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fwww.rijksmap.nl&label=rijksmap.nl&up_message=online&down_message=offline)](https://www.rijksmap.nl)
+[![Release](https://img.shields.io/github/v/release/Robert-Worm/rijksmap?label=release)](https://github.com/Robert-Worm/rijksmap/releases/latest)
+[![Rapporten](https://img.shields.io/badge/rapporten-9.116-154273)](https://www.rijksmap.nl/rijksmap-rapporten.csv)
+[![Data: CC0](https://img.shields.io/badge/data-CC0%201.0-01689b)](https://creativecommons.org/publicdomain/zero/1.0/)
+[![Code: PolyForm Noncommercial](https://img.shields.io/badge/code-PolyForm%20Noncommercial-555)](LICENSE.md)
+
 **→ Bekijk de kaart op [www.rijksmap.nl](https://www.rijksmap.nl)**
 
 [![Overzicht van de twaalf ministeries op de Rijksmap](docs/afbeeldingen/rijksmap-overzicht.png)](https://www.rijksmap.nl)
@@ -82,12 +88,13 @@ De complete website is ook als één zip te downloaden bij de [releases](../../r
 
 ## Meedoen
 
-Zie je een fout, zoals een rapport bij het verkeerde onderdeel of een verouderde bewindspersoon? [Meld het via een issue](../../issues/new/choose) of mail naar [info@rijksmap.nl](mailto:info@rijksmap.nl). Meer in [CONTRIBUTING.md](CONTRIBUTING.md).
+Zie je een fout, zoals een rapport bij het verkeerde onderdeel of een verouderde bewindspersoon? [Meld het via een issue](../../issues/new/choose) of mail naar [info@rijksmap.nl](mailto:info@rijksmap.nl). Vragen en ideeën kunnen in [Discussions](../../discussions). Meer in [CONTRIBUTING.md](CONTRIBUTING.md) en de [gedragscode](CODE_OF_CONDUCT.md).
 
 ## Goed om te weten
 
 - De risicothema's zijn een hulpmiddel om rapporten te vinden en te vergelijken, geen oordeel van de ADR, de Rekenkamer, de inspecties of de ministeries.
 - Aantallen laten zien hoeveel er over een onderwerp is onderzocht, niet hoe goed het ervoor staat.
+- De kaart is getoetst op toegankelijkheid; zie [ACCESSIBILITY.md](ACCESSIBILITY.md).
 - De kaart toont alleen zakelijke, openbare functiegegevens. Wie vermeld staat, kan correctie of verwijdering vragen via [info@rijksmap.nl](mailto:info@rijksmap.nl).
 
 ## Licentie
