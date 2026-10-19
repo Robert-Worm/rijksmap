@@ -30,11 +30,10 @@ jobs:
       - name: Bepaal wat er gecontroleerd wordt
         id: scope
         run: |
-          if [ "${{ github.event.inputs.rapporten }}" = "true" ] || [ "$(date -u +%d)" -le 07 ] && [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "rapporten=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "rapporten=false" >> "$GITHUB_OUTPUT"
-          fi
+          rapporten=false
+          if [ "${{ github.event.inputs.rapporten }}" = "true" ]; then rapporten=true; fi
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%-d)" -le 7 ]; then rapporten=true; fi
+          echo "rapporten=$rapporten" >> "$GITHUB_OUTPUT"
 
       - name: Maak de lijst met rapportlinks
         if: steps.scope.outputs.rapporten == 'true'
