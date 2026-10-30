@@ -43,13 +43,15 @@ De interface is gewoon JavaScript, zonder framework en zonder bouwstap in de bro
 
 ## Bouwen en publiceren
 
-De bronversie van de kaart heet `rijksmap.html`: data, stijl en logica in één bestand. De bouwstap `node maak-dist.mjs --zip` maakt daar het publicatiepakket van:
+De bronversie van de kaart staat in [`bron/rijksmap.html`](../bron/): data, stijl en logica in één bestand. De bouwstap `node bouw/bouw.mjs --zip` maakt daar in een tijdelijke werkmap het publicatiepakket van, met de scripts in [`bouw/`](../bouw/README.md):
 
 1. **Eerst controleren, dan bouwen.** Het script stopt bij een JavaScript-fout of een stijlfout (zoals een em-dash), zodat er nooit een kapotte build klaarstaat.
 2. **Pagina's genereren** met `maak-detailpaginas.mjs`, `maak-subpaginas.mjs` en `pagina-shell.mjs`, plus de sitemap.
 3. **Samenhang bewaken.** Dode verwijzingen, verouderde kopieën en ontbrekende bestanden breken de build.
 4. **Schoon opbouwen.** `dist/` wordt elke keer volledig opnieuw gemaakt, zodat een verwijderd bestand niet kan blijven rondslingeren.
 5. **Inpakken** als `rijksmap-dist.zip`, het pakket dat ook bij de [releases](../../../releases) staat.
+
+Met `node bouw/bouw.mjs --controleer` vergelijkt de build elk gebouwd bestand met de gepubliceerde site. Op 30 oktober 2026 waren alle 9.394 bestanden gelijk.
 
 ## Waarom één bestand, en waarom dat moet veranderen
 
@@ -70,6 +72,8 @@ De [routekaart](routekaart.md) beschrijft de overstap naar een applicatie met da
 
 ## Hosting
 
-GitHub Pages publiceert de hoofdmap van de `main`-branch. `CNAME` koppelt die aan `www.rijksmap.nl`, en `rijksmap.nl` stuurt door naar het www-adres. `.nojekyll` zorgt dat bestanden ongewijzigd worden geserveerd, ook `.well-known/`. GitHub verzorgt de HTTPS-certificaten.
+GitHub Pages publiceert de hoofdmap van de branch `pages`. Dat is de live versie, bevroren op 30 oktober 2026, zodat `main` vrij is voor de nieuwe applicatie (zie [besluit B-007](beheer/besluiten.md#b-007)). Een wijziging aan de live site gaat daarom naar `pages`, niet naar `main`. `CNAME` koppelt de site aan `www.rijksmap.nl`, en `rijksmap.nl` stuurt door naar het www-adres. `.nojekyll` zorgt dat bestanden ongewijzigd worden geserveerd, ook `.well-known/`. GitHub verzorgt de HTTPS-certificaten.
 
 GitHub Pages ondersteunt geen eigen HTTP-headers. Het Content Security Policy van de site staat daarom als `<meta http-equiv>` in de pagina zelf.
+
+Dezelfde site draait ook op Sliplane, als service `rijksmap-site` op [rijksmap-site.sliplane.app](https://rijksmap-site.sliplane.app), naast Omnibus op dezelfde server. Die versie bouwt vanaf `main` en rolt elke push automatisch uit. Zie [de huidige site in een container](../hosting/site/README.md). www.rijksmap.nl wijst nog naar GitHub Pages; de overstap staat in de [routekaart](routekaart.md).

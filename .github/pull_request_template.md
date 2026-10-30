@@ -1,13 +1,23 @@
-## Wat verandert er?
+## Doel
 
-<!-- Korte beschrijving van de wijziging. -->
+<!-- Welk probleem lost dit op? Verwijs naar het issue: "Closes #12". -->
 
-## Waarom?
+## Wijziging
 
-<!-- Welk probleem lost dit op? Verwijs naar een issue als dat er is: "Lost #12 op". -->
+<!-- Wat verandert er, en wat merkt een bezoeker of beheerder ervan? -->
 
 ## Controle
 
-- [ ] Ik heb alleen documentatie gewijzigd, of de wijziging aan site of data eerst in een issue besproken (die bestanden worden gegenereerd, zie CONTRIBUTING.md).
+<!-- Noem de controles die je echt hebt gedraaid, met de uitkomst. Zie AGENTS.md (Testen). -->
+
+## Raakt dit de live site?
+
+<!-- www.rijksmap.nl publiceert de branch pages. Raakt deze wijziging pages, CNAME, Pages, DNS of de Sliplane-domeinen? Zo ja: welk akkoord van de beheerder? -->
+
+## Checklist
+
+- [ ] De commits noemen het issuenummer.
+- [ ] Gegenereerde sitebestanden zijn niet met de hand gewijzigd; bij een wijziging in `bron/` of `bouw/` heb ik `node bouw/bouw.mjs --controleer` gedraaid.
+- [ ] Ik heb gecontroleerd op geheimen, persoonlijke paden, persoonsgegevens en private inhoud.
 - [ ] Feitelijke beweringen hebben een link naar de officiële bron.
-- [ ] Nederlands, zakelijk, en geen em-dashes.
+- [ ] Nederlands, B1, en geen em-dashes.
