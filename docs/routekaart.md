@@ -38,6 +38,29 @@ Nu zit alle data in `index.html` (zie [architectuur](architectuur.md#waarom-éé
 - [ ] Statische rapport- en organisatiepagina's die uit de database worden gegenereerd, zodat vaste adressen en vindbaarheid blijven
 - [ ] De privacybelofte overeind houden: geen tracking, geen cookies, geen derde partijen
 
+### De transitie in epics
+
+Op 30 oktober 2026 is deze fase uitgewerkt in negen epics met user stories. Ze staan in [`.github/backlog/transitie-2026-10.mjs`](../.github/backlog/transitie-2026-10.mjs); een workflow maakt er GitHub-issues van met het label `transitie`. De werkwijze is overgenomen van [Omnibus](https://github.com/Robert-Worm/omnibus).
+
+Uitgangspunten:
+
+- **De huidige site blijft online en ongewijzigd.** Hij gaat eerst als statische site naar Sliplane, met GitHub Pages als terugval. De nieuwe applicatie draait daar als testversie naast.
+- **Eén repository.** De huidige sitebestanden krijgen later een eigen map `site/`, en verdwijnen na de overstap.
+- **Zoveel mogelijk overnemen uit Omnibus:** stack, kwaliteitscontroles, werkwijze, besluitenlog en backlog.
+- **Eerst een werkende basis**, met database, snelheid en efficiëntie. Nieuwe functies komen daarna.
+
+| Epic | Wat het oplevert |
+| --- | --- |
+| EP-R1 · Fundament en kwaliteit | Afspraken, besluitenlog, bouwscripts in de repository en controles bij elke pull request, zoals bij Omnibus |
+| EP-R2 · Huidige site op Sliplane | www.rijksmap.nl draait ongewijzigd vanaf Sliplane, met Pages als terugval |
+| EP-R3 · Datamodel | Elk ministerie, onderdeel, persoon, functie en rapport krijgt een vaste ID en herkomst per veld |
+| EP-R4 · Nieuwe applicatie | Dezelfde kaart, pagina's en open data uit de database, sneller, en met links van de kaart naar de vaste pagina's |
+| EP-R5 · Testversie op Sliplane | De nieuwe applicatie als testversie naast de huidige site en Omnibus |
+| EP-R6 · Beheeromgeving | Organisatie, personen en rapporten aanpassen en verhuizen in pop-ups, met inlog |
+| EP-R7 · AI-koppeling (MCP) | Lezen en, met autorisatie, schrijven via een eigen AI-assistent |
+| EP-R8 · Bijdragen via GitHub | Formulieren, labels en een bot voor aangedragen rapporten, correcties en verhuisberichten |
+| EP-R9 · Overstap en opruimen | In één keer overstappen, oude adressen behouden, oude site uit de repository |
+
 ## Fase 4 · Toegang voor AI-agents
 
 *Iedereen een eigen AI-agent op de data laten loslaten.*
