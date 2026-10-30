@@ -97,6 +97,7 @@ De kaart is nu één groot HTML-bestand (circa 10 MB) waarin alle data zit. Dat 
 ├── bron/                       bronbestanden: rijksmap.html, registers, vaste bestanden
 ├── bouw/                       bouwscripts; node bouw/bouw.mjs bouwt de site
 ├── hosting/site/               de site als container voor Sliplane
+├── AGENTS.md                   afspraken voor wie aan de Rijksmap werkt, ook met AI
 ├── docs/                       documentatie en leesprotocollen
 └── CNAME                       koppelt de site aan www.rijksmap.nl
 ```
@@ -105,7 +106,7 @@ De complete website is ook als één zip te downloaden bij de [releases](../../r
 
 ## Meedoen
 
-Zie je een fout, zoals een rapport bij het verkeerde onderdeel of een verouderde bewindspersoon? [Meld het via een issue](../../issues/new/choose) of mail naar [info@rijksmap.nl](mailto:info@rijksmap.nl). Vragen en ideeën kunnen in [Discussions](../../discussions). Meer in [CONTRIBUTING.md](CONTRIBUTING.md) en de [gedragscode](CODE_OF_CONDUCT.md).
+Zie je een fout, zoals een rapport bij het verkeerde onderdeel of een verouderde bewindspersoon? [Meld het via een issue](../../issues/new/choose) of mail naar [info@rijksmap.nl](mailto:info@rijksmap.nl). Vragen en ideeën kunnen in [Discussions](../../discussions). Meer in [CONTRIBUTING.md](CONTRIBUTING.md) en de [gedragscode](CODE_OF_CONDUCT.md). Werk je met een AI-agent aan de code, lees dan [AGENTS.md](AGENTS.md).
 
 ## Goed om te weten
 

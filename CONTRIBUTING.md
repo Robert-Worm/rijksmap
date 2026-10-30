@@ -25,6 +25,8 @@ Sta je zelf op de Rijksmap en wil je iets laten corrigeren of verwijderen, mail 
 
 ## Code en pull requests
 
+Werk je met een AI-agent, of wil je weten welke regels gelden voor code en data? Lees dan eerst [AGENTS.md](AGENTS.md).
+
 De meeste bestanden in deze repository zijn **gegenereerd**. `index.html` en de ruim 9.000 statische pagina's worden gebouwd uit de bronbestanden in [`bron/`](bron/) met de scripts in [`bouw/`](bouw/README.md). Handmatige wijzigingen in gegenereerde bestanden worden bij de volgende build overschreven.
 
 - Pull requests op `README.md`, `docs/`, `bouw/` en dit bestand zijn welkom.
