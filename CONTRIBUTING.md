@@ -25,10 +25,11 @@ Sta je zelf op de Rijksmap en wil je iets laten corrigeren of verwijderen, mail 
 
 ## Code en pull requests
 
-De meeste bestanden in deze repository zijn **gegenereerd**. `index.html` en de ruim 9.000 statische pagina's worden gebouwd door de pijplijn uit [docs/pijplijn-en-kwaliteit.md](docs/pijplijn-en-kwaliteit.md). Handmatige wijzigingen worden bij de volgende bijwerkronde overschreven. Zolang de bouwscripts nog niet in de repository staan (zie de [routekaart](docs/routekaart.md)):
+De meeste bestanden in deze repository zijn **gegenereerd**. `index.html` en de ruim 9.000 statische pagina's worden gebouwd uit de bronbestanden in [`bron/`](bron/) met de scripts in [`bouw/`](bouw/README.md). Handmatige wijzigingen in gegenereerde bestanden worden bij de volgende build overschreven.
 
-- zijn pull requests op `README.md`, `docs/` en dit bestand welkom
-- kun je voor wijzigingen aan site of data een issue openen; de wijziging wordt dan in de bron doorgevoerd
+- Pull requests op `README.md`, `docs/`, `bouw/` en dit bestand zijn welkom.
+- Voor wijzigingen aan de gegevens open je een issue; de wijziging wordt dan in de bron doorgevoerd.
+- De live site www.rijksmap.nl publiceert de branch `pages` (zie [besluit B-007](docs/beheer/besluiten.md#b-007)).
 
 ## Werken met de leesprotocollen
 

@@ -12,8 +12,9 @@ Dit zijn voornemens, geen beloftes. Volgorde en details kunnen veranderen. IdeeÃ
 - [x] Documentatie van architectuur, datamodel, pijplijn en kwaliteitsborging
 - [x] Leesprotocollen gepubliceerd in [`docs/protocollen/`](protocollen/)
 - [x] Issue-formulieren voor datacorrecties, zodat elke correctie herleidbaar is
-- [ ] Bouw- en controlescripts toevoegen (`maak-dist.mjs`, `maak-detailpaginas.mjs`, `bijwerken*.mjs`, `zoektest.mjs`, de controlescripts), opgeschoond tot een reproduceerbare set
-- [ ] De bronversie `rijksmap.html` en de data als aparte bestanden in de repository, zodat wijzigingen te reviewen zijn
+- [x] Bouw- en controlescripts toevoegen, als reproduceerbare set in [`bouw/`](../bouw/README.md) (de `bijwerken*.mjs`-reeks volgt als de data een eigen plek heeft)
+- [x] De bronversie `rijksmap.html` in de repository ([`bron/`](../bron/))
+- [ ] De data als aparte bestanden in de repository, zodat wijzigingen te reviewen zijn (epic Datamodel)
 
 ## Fase 2 Â· Labelkwaliteit aantoonbaar maken
 
