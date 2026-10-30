@@ -41,7 +41,7 @@ Nu zit alle data in `index.html` (zie [architectuur](architectuur.md#waarom-éé
 
 ### De transitie in epics
 
-Op 30 oktober 2026 is deze fase uitgewerkt in tien epics met user stories. Ze staan in [`.github/backlog/`](../.github/backlog/); een workflow maakt er GitHub-issues van met het label `transitie`. De werkwijze is overgenomen van [Omnibus](https://github.com/Robert-Worm/omnibus).
+Op 30 oktober 2026 is deze fase uitgewerkt in elf epics met user stories. Ze staan in [`.github/backlog/`](../.github/backlog/); een workflow maakt er GitHub-issues van met het label `transitie`. De werkwijze is overgenomen van [Omnibus](https://github.com/Robert-Worm/omnibus).
 
 In welke volgorde het werk gebeurt, en waarom, staat in [`.github/backlog/volgorde.mjs`](../.github/backlog/volgorde.mjs). Een workflow houdt daarmee het issue *Werkvolgorde* bij: per fase de stories op volgorde, met wat er nu klaar is om op te pakken. De fasen:
 
@@ -72,6 +72,7 @@ Uitgangspunten:
 | EP-R8 · Bijdragen via GitHub | Formulieren, labels en een bot voor aangedragen rapporten, correcties en verhuisberichten |
 | EP-R9 · Overstap en opruimen | In één keer overstappen, oude adressen behouden, oude site uit de repository |
 | EP-R10 · Eén huisstijl | Omnibus en de Rijksmap herkenbaar als tools van dezelfde maker: dezelfde kop, voet en kleuren, verwijzingen naar elkaar, en een startpakket voor volgende tools |
+| EP-R11 · Klaar voor de koppeling met Omnibus | De zes eisen van Omnibus: vaste ID's, databaserelease met versie, controlegetallen, open toegang, HOLD bij twijfel, en relaties tussen rapporten |
 
 ## Fase 4 · Toegang voor AI-agents
 
