@@ -1,5 +1,11 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
 contact_links:
   - name: Persoonsgegevens (correctie of verwijdering)
     url: mailto:info@rijksmap.nl
     about: Sta je zelf op de Rijksmap? Mail dan in plaats van een openbaar issue te maken.
+  - name: Vraag of gesprek
+    url: https://github.com/Robert-Worm/rijksmap/discussions
+    about: Stel een vraag, deel een idee of laat zien wat je met de data hebt gemaakt.
+  - name: Beveiligingsprobleem
+    url: https://github.com/Robert-Worm/rijksmap/blob/main/SECURITY.md
+    about: Meld beveiligingsproblemen vertrouwelijk, niet in een openbaar issue.

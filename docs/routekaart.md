@@ -12,8 +12,9 @@ Dit zijn voornemens, geen beloftes. Volgorde en details kunnen veranderen. Idee�
 - [x] Documentatie van architectuur, datamodel, pijplijn en kwaliteitsborging
 - [x] Leesprotocollen gepubliceerd in [`docs/protocollen/`](protocollen/)
 - [x] Issue-formulieren voor datacorrecties, zodat elke correctie herleidbaar is
-- [ ] Bouw- en controlescripts toevoegen (`maak-dist.mjs`, `maak-detailpaginas.mjs`, `bijwerken*.mjs`, `zoektest.mjs`, de controlescripts), opgeschoond tot een reproduceerbare set
-- [ ] De bronversie `rijksmap.html` en de data als aparte bestanden in de repository, zodat wijzigingen te reviewen zijn
+- [x] Bouw- en controlescripts toevoegen, als reproduceerbare set in [`bouw/`](../bouw/README.md) (de `bijwerken*.mjs`-reeks volgt als de data een eigen plek heeft)
+- [x] De bronversie `rijksmap.html` in de repository ([`bron/`](../bron/))
+- [ ] De data als aparte bestanden in de repository, zodat wijzigingen te reviewen zijn (epic Datamodel)
 
 ## Fase 2 · Labelkwaliteit aantoonbaar maken
 
@@ -40,7 +41,17 @@ Nu zit alle data in `index.html` (zie [architectuur](architectuur.md#waarom-éé
 
 ### De transitie in epics
 
-Op 30 oktober 2026 is deze fase uitgewerkt in negen epics met user stories. Ze staan in [`.github/backlog/transitie-2026-10.mjs`](../.github/backlog/transitie-2026-10.mjs); een workflow maakt er GitHub-issues van met het label `transitie`. De werkwijze is overgenomen van [Omnibus](https://github.com/Robert-Worm/omnibus).
+Op 30 oktober 2026 is deze fase uitgewerkt in elf epics met user stories. Ze staan in [`.github/backlog/`](../.github/backlog/); een workflow maakt er GitHub-issues van met het label `transitie`. De werkwijze is overgenomen van [Omnibus](https://github.com/Robert-Worm/omnibus).
+
+In welke volgorde het werk gebeurt, en waarom, staat in [`.github/backlog/volgorde.mjs`](../.github/backlog/volgorde.mjs). Een workflow houdt daarmee het issue *Werkvolgorde* bij: per fase de stories op volgorde, met wat er nu klaar is om op te pakken. De fasen:
+
+0. **Fundament op orde:** bouwscripts in de repository, controles bij elke pull request.
+1. **Huidige site op Sliplane en in de gedeelde huisstijl.**
+2. **Datamodel met eigen identiteit.**
+3. **Applicatie leest uit de database**, als testversie online.
+4. **Beheren en schrijven**, met inlog; elke wijziging wordt een commit.
+5. **Community:** bijdragen via GitHub automatisch verwerkt.
+6. **Overstap en opruimen.**
 
 Uitgangspunten:
 
@@ -60,6 +71,8 @@ Uitgangspunten:
 | EP-R7 · AI-koppeling (MCP) | Lezen en, met autorisatie, schrijven via een eigen AI-assistent |
 | EP-R8 · Bijdragen via GitHub | Formulieren, labels en een bot voor aangedragen rapporten, correcties en verhuisberichten |
 | EP-R9 · Overstap en opruimen | In één keer overstappen, oude adressen behouden, oude site uit de repository |
+| EP-R10 · Eén huisstijl | Omnibus en de Rijksmap herkenbaar als tools van dezelfde maker: dezelfde kop, voet en kleuren, verwijzingen naar elkaar, en een startpakket voor volgende tools |
+| EP-R11 · Klaar voor de koppeling met Omnibus | De zes eisen van Omnibus: vaste ID's, databaserelease met versie, controlegetallen, open toegang, HOLD bij twijfel, en relaties tussen rapporten |
 
 ## Fase 4 · Toegang voor AI-agents
 

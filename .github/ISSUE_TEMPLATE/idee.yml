@@ -1,0 +1,27 @@
+name: Idee of verbetering
+description: Stel een verbetering voor aan de kaart, de data of de documentatie
+title: "[idee] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Dank je! Een kort, concreet voorstel wordt het snelst opgepakt. Twijfel je of het een goed idee is, start dan liever een gesprek in [Discussions](https://github.com/Robert-Worm/rijksmap/discussions).
+  - type: textarea
+    id: behoefte
+    attributes:
+      label: Wat is nu lastig, en voor wie?
+    validations:
+      required: true
+  - type: textarea
+    id: voorstel
+    attributes:
+      label: Wat is de kleinste nuttige verbetering?
+      description: Welke alternatieven heb je overwogen?
+    validations:
+      required: true
+  - type: textarea
+    id: bron
+    attributes:
+      label: Bron of voorbeeld
+      description: Optioneel. Een link naar een officiële bron, een voorbeeld elders of een schermafbeelding. Voeg geen vertrouwelijke gegevens toe.

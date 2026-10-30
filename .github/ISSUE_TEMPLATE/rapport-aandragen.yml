@@ -1,0 +1,75 @@
+name: Rapport aandragen
+description: Een openbaar audit-, toezicht- of onderzoeksrapport over de rijksoverheid dat nog niet op de Rijksmap staat
+title: "[rapport] "
+labels: ["rapportvoorstel"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Dank je! Vul de gegevens van één openbaar rapport in. Deel geen vertrouwelijke informatie.
+
+        De beheerder controleert of het rapport openbaar is en binnen de Rijksmap valt: audit-, toezicht- of onderzoeksrapporten sinds 2019 over een ministerie of een onderdeel daarvan. De officiële bron beslist. De Rijksmap neemt het rapport niet over, maar linkt naar de publicatie van de uitgever.
+
+        Kijk eerst op [www.rijksmap.nl](https://www.rijksmap.nl) of het rapport er al staat (zoek op de titel).
+  - type: input
+    id: url
+    attributes:
+      label: Link naar de officiële publicatie
+      description: De pagina van de uitgever, bijvoorbeeld op rijksoverheid.nl, rekenkamer.nl of open.overheid.nl. Iedereen moet het zonder account kunnen lezen.
+      placeholder: https://www.rijksoverheid.nl/documenten/...
+    validations:
+      required: true
+  - type: input
+    id: titel
+    attributes:
+      label: Titel
+      description: Neem de titel letterlijk over van de publicatie.
+    validations:
+      required: true
+  - type: input
+    id: uitgever
+    attributes:
+      label: Uitgever of auteur
+      description: Wie heeft het rapport geschreven of uitgebracht?
+      placeholder: bijv. Auditdienst Rijk, Algemene Rekenkamer, Inspectie Justitie en Veiligheid
+    validations:
+      required: true
+  - type: input
+    id: datum
+    attributes:
+      label: Publicatiedatum
+      description: Gebruik JJJJ-MM-DD, zoals op de publicatie. Weet je alleen de maand of het jaar, schrijf dat dan.
+      placeholder: "2026-01-15"
+    validations:
+      required: true
+  - type: dropdown
+    id: soort
+    attributes:
+      label: Soort bron
+      options:
+        - Auditdienst Rijk
+        - Algemene Rekenkamer
+        - Rijksinspecties en andere toezichthouders
+        - Onderzoeken en evaluaties
+        - Weet ik niet
+    validations:
+      required: true
+  - type: input
+    id: onderdeel
+    attributes:
+      label: Over welk ministerie of onderdeel gaat het?
+      description: Bijvoorbeeld een directoraat-generaal of dienst. Laat leeg als je het niet weet.
+  - type: textarea
+    id: toelichting
+    attributes:
+      label: Toelichting
+      description: Optioneel. Waarom hoort dit rapport op de Rijksmap?
+  - type: checkboxes
+    id: controle
+    attributes:
+      label: Controle
+      options:
+        - label: Het rapport is openbaar en zonder account te lezen.
+          required: true
+        - label: Ik heb gezocht en het rapport staat nog niet op de Rijksmap.
+          required: true

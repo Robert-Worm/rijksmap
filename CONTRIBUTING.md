@@ -15,6 +15,10 @@ Dit is de waardevolste bijdrage. Bijvoorbeeld:
 
 Vuistregel: **de officiële bron beslist.** Spreken bronnen elkaar tegen, dan wint de meest recente officiële publicatie.
 
+## Een rapport aandragen
+
+Mist er een openbaar audit-, toezicht- of onderzoeksrapport over de rijksoverheid? [Draag het aan](../../issues/new?template=rapport-aandragen.yml) met de link naar de officiële publicatie, de titel, de uitgever en de datum. De beheerder controleert of het openbaar is en binnen de Rijksmap valt. De Rijksmap neemt het rapport niet over, maar linkt naar de publicatie van de uitgever.
+
 ## Een fout in de site melden
 
 [Open een foutmelding](../../issues/new?template=bug-report.yml) met het adres van de pagina, wat je deed, wat je verwachtte, en je browser en apparaat. Een schermafbeelding helpt.
@@ -25,10 +29,13 @@ Sta je zelf op de Rijksmap en wil je iets laten corrigeren of verwijderen, mail 
 
 ## Code en pull requests
 
-De meeste bestanden in deze repository zijn **gegenereerd**. `index.html` en de ruim 9.000 statische pagina's worden gebouwd door de pijplijn uit [docs/pijplijn-en-kwaliteit.md](docs/pijplijn-en-kwaliteit.md). Handmatige wijzigingen worden bij de volgende bijwerkronde overschreven. Zolang de bouwscripts nog niet in de repository staan (zie de [routekaart](docs/routekaart.md)):
+Werk je met een AI-agent, of wil je weten welke regels gelden voor code en data? Lees dan eerst [AGENTS.md](AGENTS.md).
 
-- zijn pull requests op `README.md`, `docs/` en dit bestand welkom
-- kun je voor wijzigingen aan site of data een issue openen; de wijziging wordt dan in de bron doorgevoerd
+De meeste bestanden in deze repository zijn **gegenereerd**. `index.html` en de ruim 9.000 statische pagina's worden gebouwd uit de bronbestanden in [`bron/`](bron/) met de scripts in [`bouw/`](bouw/README.md). Handmatige wijzigingen in gegenereerde bestanden worden bij de volgende build overschreven.
+
+- Pull requests op `README.md`, `docs/`, `bouw/` en dit bestand zijn welkom.
+- Voor wijzigingen aan de gegevens open je een issue; de wijziging wordt dan in de bron doorgevoerd.
+- De live site www.rijksmap.nl publiceert de branch `pages` (zie [besluit B-007](docs/beheer/besluiten.md#b-007)).
 
 ## Werken met de leesprotocollen
 
