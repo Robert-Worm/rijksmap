@@ -4,7 +4,7 @@
 import { readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { controleerNieuweStory, werklabelsVan } from "./backlog-lib.mjs";
+import { controleerNieuweStory, werklabelsVan, isBacklogBestand } from "./backlog-lib.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const repo = process.env.GITHUB_REPOSITORY;
@@ -25,6 +25,8 @@ const LABELS = [
   { name: "epic", color: "5319e7", description: "Groot doel, opgedeeld in user stories" },
   { name: "story", color: "0e8a16", description: "User story: een afgebakend stuk werk" },
   { name: "transitie", color: "fbca04", description: "Transitie naar database, applicatie en Sliplane" },
+  { name: "huisstijl", color: "c5def5", description: "Eén huisstijl voor Omnibus, de Rijksmap en volgende tools" },
+  { name: "werkvolgorde", color: "ededed", description: "Het automatische overzicht van de werkvolgorde" },
   { name: "Opus 5.5", color: "d4a373", description: "Licht werk voor Claude Opus 5.5: pagina's, epics en stories, besluiten" },
   { name: "ChatGPT Astra", color: "10a37f", description: "Zwaar werk voor ChatGPT Astra: code, data, grote reviews" },
   { name: "P1", color: "b60205", description: "Prioriteit 1: blokkeert ander werk of de beheerder" },
@@ -50,7 +52,7 @@ for (const label of ["epic", "story"]) for (let page = 1; ; page++) {
 
 // Eerst alles controleren, zodat een fout in één story niet halverwege een deel aanmaakt.
 const backlogs = [];
-for (const file of readdirSync(join(root, ".github", "backlog")).filter((f) => f.endsWith(".mjs")).sort())
+for (const file of readdirSync(join(root, ".github", "backlog")).filter(isBacklogBestand).sort())
   backlogs.push((await import(pathToFileURL(join(root, ".github", "backlog", file)))).default);
 for (const b of backlogs) for (const e of b.epics) for (const s of e.stories) if (!known.has(s.id)) controleerNieuweStory(s);
 

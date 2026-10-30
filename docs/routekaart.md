@@ -40,7 +40,17 @@ Nu zit alle data in `index.html` (zie [architectuur](architectuur.md#waarom-éé
 
 ### De transitie in epics
 
-Op 30 oktober 2026 is deze fase uitgewerkt in negen epics met user stories. Ze staan in [`.github/backlog/transitie-2026-10.mjs`](../.github/backlog/transitie-2026-10.mjs); een workflow maakt er GitHub-issues van met het label `transitie`. De werkwijze is overgenomen van [Omnibus](https://github.com/Robert-Worm/omnibus).
+Op 30 oktober 2026 is deze fase uitgewerkt in tien epics met user stories. Ze staan in [`.github/backlog/`](../.github/backlog/); een workflow maakt er GitHub-issues van met het label `transitie`. De werkwijze is overgenomen van [Omnibus](https://github.com/Robert-Worm/omnibus).
+
+In welke volgorde het werk gebeurt, en waarom, staat in [`.github/backlog/volgorde.mjs`](../.github/backlog/volgorde.mjs). Een workflow houdt daarmee het issue *Werkvolgorde* bij: per fase de stories op volgorde, met wat er nu klaar is om op te pakken. De fasen:
+
+0. **Fundament op orde:** bouwscripts in de repository, controles bij elke pull request.
+1. **Huidige site op Sliplane en in de gedeelde huisstijl.**
+2. **Datamodel met eigen identiteit.**
+3. **Applicatie leest uit de database**, als testversie online.
+4. **Beheren en schrijven**, met inlog; elke wijziging wordt een commit.
+5. **Community:** bijdragen via GitHub automatisch verwerkt.
+6. **Overstap en opruimen.**
 
 Uitgangspunten:
 
@@ -60,6 +70,7 @@ Uitgangspunten:
 | EP-R7 · AI-koppeling (MCP) | Lezen en, met autorisatie, schrijven via een eigen AI-assistent |
 | EP-R8 · Bijdragen via GitHub | Formulieren, labels en een bot voor aangedragen rapporten, correcties en verhuisberichten |
 | EP-R9 · Overstap en opruimen | In één keer overstappen, oude adressen behouden, oude site uit de repository |
+| EP-R10 · Eén huisstijl | Omnibus en de Rijksmap herkenbaar als tools van dezelfde maker: dezelfde kop, voet en kleuren, verwijzingen naar elkaar, en een startpakket voor volgende tools |
 
 ## Fase 4 · Toegang voor AI-agents
 

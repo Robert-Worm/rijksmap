@@ -1,0 +1,39 @@
+name: Werkvolgorde
+
+# Houdt de labels P1-P3, het werklabel en `klaar` gelijk met .github/backlog/volgorde.mjs,
+# en werkt het issue "Werkvolgorde" bij. Draait na het aanmaken van backlog-issues, als een
+# issue sluit, opent of een label krijgt, en elke ochtend. Raakt de sitebestanden niet.
+on:
+  workflow_run:
+    workflows: ['Backlog naar issues']
+    types: [completed]
+  issues:
+    types: [closed, reopened, labeled, unlabeled]
+  schedule:
+    - cron: '23 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: werkvolgorde
+  cancel-in-progress: true
+
+jobs:
+  volgorde:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24.21.0'
+          package-manager-cache: false
+      - name: Backlog en volgorde controleren
+        run: node --test .github/scripts/backlog.test.mjs
+      - name: Labels en overzicht bijwerken
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node .github/scripts/werkvolgorde.mjs
