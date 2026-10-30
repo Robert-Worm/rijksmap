@@ -42,7 +42,7 @@ export default {
         { id: "R8-1", waarom: "Snelle winst: bezoekers kunnen nu al rapporten aandragen via GitHub." },
         { id: "R8-3", na: ["R8-1"], waarom: "Vaste labels, zodat elke bijdrage zichtbaar wordt verwerkt." },
         { id: "R10-1", prio: "P2", waarom: "Eerst zien waar Omnibus en de Rijksmap afwijken; klein en zonder code." },
-        { id: "R10-2", na: ["R10-1"], prio: "P2", waarom: "De beheerder kiest de gedeelde huisstijl: Omnibus als basis, het lichtere blauw van de Rijksmap." },
+        { id: "R10-2", na: ["R10-1"], prio: "P2", waarom: "De beheerder kiest de gedeelde huisstijl: Omnibus als basis, met het tweekleurige woordmerk van de Rijksmap." },
         { id: "R10-3", na: ["R10-2"], prio: "P2", waarom: "De gids is nodig vóór de app een kop en voet krijgt." },
         { id: "R10-4", na: ["R2-7", "R10-3"], prio: "P2", waarom: "Snel zichtbaar resultaat: de tools verwijzen naar elkaar." },
         { id: "R10-5", na: ["R1-4", "R2-7", "R10-3"], prio: "P2", waarom: "De huidige site al in de huisstijl, via de bouwscripts." },

@@ -1,9 +1,10 @@
 // Backlog: één huisstijl voor Omnibus, de Rijksmap en toekomstige tools van dezelfde maker.
-// Gevraagd door de beheerder op 30 oktober 2026: Omnibus is de basis, met het lichtere blauw van de
-// Rijksmap; vooral kop en voet gelijk, en de tools verwijzen naar elkaar.
+// Gevraagd door de beheerder op 30 oktober 2026: Omnibus is de basis, met het tweekleurige woordmerk
+// van de Rijksmap (donkerblauw en lichter blauw, met lint); vooral kop en voet gelijk, en de tools
+// verwijzen naar elkaar.
 // Het script .github/scripts/backlog.mjs maakt hiervan GitHub-issues.
 
-const BRON = "Gevraagd door de beheerder, 30 oktober 2026. Omnibus gebruikt nu donkerblauw `#154273` als hoofdkleur, de Rijksmap het lichtere `#01689b`; Omnibus heeft een vaste voet in `app/product-footer.tsx` en kleurtokens `--rm-*` in `app/appearance.css`.";
+const BRON = "Gevraagd door de beheerder, 30 oktober 2026. Omnibus gebruikt nu donkerblauw `#154273` als hoofdkleur en een titel in één kleur. De Rijksmap heeft linksboven een tweekleurig woordmerk dat de beheerder wil behouden: een verticaal lint, dan \"Rijks\" in `#154273` en \"map\" in het lichtere blauw `#01689b` (donkere modus `#4FB0C6`), in de letter Spectral (`.brand` en `.lint` in `index.html`). Omnibus heeft een vaste voet in `app/product-footer.tsx` en kleurtokens `--rm-*` in `app/appearance.css`.";
 
 export default {
   id: "huisstijl-2026-10",
@@ -13,11 +14,12 @@ export default {
       id: "EP-R10",
       titel: "Eén huisstijl voor Omnibus, de Rijksmap en volgende tools",
       onderdeel: "Huisstijl",
-      doel: "Omnibus en de Rijksmap zien er herkenbaar uit als tools van dezelfde maker: dezelfde kop, voet, kleuren en schrijfstijl, met Omnibus als basis en het lichtere blauw van de Rijksmap. Ze verwijzen naar elkaar, afwijkingen worden automatisch gevonden, en een nieuwe tool start met dezelfde huisstijl.",
+      doel: "Omnibus en de Rijksmap zien er herkenbaar uit als tools van dezelfde maker: dezelfde kop, voet, kleuren en schrijfstijl, met Omnibus als basis en het tweekleurige woordmerk van de Rijksmap. Ze verwijzen naar elkaar, afwijkingen worden automatisch gevonden, en een nieuwe tool start met dezelfde huisstijl.",
       dod: [
         "**Klaar wanneer**",
         "- Alle user stories hieronder zijn afgerond.",
         "- Kop en voet van Omnibus en de Rijksmap volgen dezelfde huisstijlgids.",
+        "- Beide tools hebben linksboven een tweekleurig woordmerk met lint, zoals de Rijksmap nu.",
         "- Een controle meldt elke afwijking tussen de twee tools.",
         "- De documentatie beschrijft alleen wat er werkelijk is.",
       ].join("\n"),
@@ -26,21 +28,21 @@ export default {
           verhaal: "Als beheerder wil ik op één pagina zien waar Omnibus en de Rijksmap van elkaar afwijken, zodat ik weet wat er gelijk moet.",
           bron: BRON,
           waar: ["Omnibus: `app/appearance.css`, `app/product-footer.tsx`, de kop van de app", "Rijksmap: de stijlblokken in `index.html` en `pagina-shell.mjs`"],
-          aanpak: ["Vergelijk kleuren, lettertypen, kop, voet, knoppen, iconen, donkere modus en schrijfstijl", "Maak per onderdeel schermafbeeldingen van beide tools, licht en donker"],
+          aanpak: ["Vergelijk woordmerk en logo, kleuren, lettertypen, kop, voet, knoppen, iconen, donkere modus en schrijfstijl", "Maak per onderdeel schermafbeeldingen van beide tools, licht en donker"],
           criteria: ["Overzicht in `docs/huisstijl-verschillen.md` met per onderdeel: Omnibus, Rijksmap, voorstel", "Schermafbeeldingen van kop en voet van beide tools", "De beheerder heeft het overzicht gezien"],
           labels: ["Opus 5.5", "P2", "klaar"] },
         { id: "R10-2", titel: "Besluit: de gedeelde huisstijl",
           verhaal: "Als beheerder wil ik één keer vastleggen hoe mijn tools eruitzien, zodat niemand daar per tool opnieuw over hoeft te beslissen.",
-          bron: `${BRON} Wens van de beheerder: Omnibus als basis, het lichtere blauw van de Rijksmap.`,
+          bron: `${BRON} Wens van de beheerder: Omnibus als basis; het tweekleurige woordmerk van de Rijksmap blijft en wordt de standaard.`,
           waar: ["`docs/beheer/besluiten.md` (Rijksmap) en de besluitenlog van Omnibus"],
-          aanpak: ["Leg keuzes voor per onderdeel uit R10-1, met een voorbeeld", "Besluit ook waar de huisstijl woont: in Omnibus, in een eigen kleine repository, of in beide"],
-          criteria: ["Besluit vastgelegd in beide besluitenlogs", "Kleuren voldoen aan WCAG-contrast (gemeten, licht en donker)"],
+          aanpak: ["Leg keuzes voor per onderdeel uit R10-1, met een voorbeeld", "Vast uitgangspunt: het woordmerk in twee kleuren met lint, zoals Rijks**map**. Omnibus krijgt hetzelfde patroon; laat twee of drie varianten zien (bijvoorbeeld Omni**bus**)", "Besluit ook waar de huisstijl woont: in Omnibus, in een eigen kleine repository, of in beide"],
+          criteria: ["Besluit vastgelegd in beide besluitenlogs", "Het woordmerk van Omnibus is gekozen door de beheerder", "Kleuren voldoen aan WCAG-contrast (gemeten, licht en donker)"],
           labels: ["Opus 5.5", "P2", "wacht-op-beheerder"] },
         { id: "R10-3", titel: "Huisstijlgids met kleuren, kop, voet en schrijfstijl",
           verhaal: "Als ontwikkelaar (mens of AI) wil ik één gids met de vaste kleuren, onderdelen en schrijfregels, zodat elke tool er hetzelfde uitziet.",
           bron: BRON,
           waar: ["De plek uit het besluit van R10-2", "Een bestand met kleurtokens dat beide tools kunnen gebruiken"],
-          aanpak: ["Beschrijf de tokens (kleur, letter, ruimte, rand) in licht en donker", "Beschrijf kop en voet: wat erin staat, in welke volgorde", "Neem de schrijfregels op: Nederlands, B1, geen em-dashes"],
+          aanpak: ["Beschrijf de tokens (kleur, letter, ruimte, rand) in licht en donker", "Beschrijf het woordmerk: lint, eerste deel donkerblauw, tweede deel lichter blauw, letter Spectral, regels voor een nieuwe toolnaam", "Beschrijf kop en voet: wat erin staat, in welke volgorde", "Neem de schrijfregels op: Nederlands, B1, geen em-dashes"],
           criteria: ["Gids en tokenbestand bestaan en zijn gelinkt vanuit beide README's", "Elke token heeft een naam, waarde en gebruik"],
           labels: ["Opus 5.5", "P2"] },
         { id: "R10-4", titel: "De tools verwijzen naar elkaar",
@@ -54,15 +56,15 @@ export default {
           verhaal: "Als bezoeker wil ik dat de Rijksmap er nu al uitziet als familie van Omnibus, ook voordat de nieuwe applicatie klaar is.",
           bron: BRON,
           waar: ["`rijksmap.html` en `pagina-shell.mjs` (de bouwscripts)", "De gegenereerde pagina's in `site/`"],
-          aanpak: ["Pas kop en voet aan volgens de gids, met de tokens", "Bouw de site opnieuw met de bouwscripts; geen handwerk in gegenereerde bestanden"],
+          aanpak: ["Pas kop en voet aan volgens de gids, met de tokens; het woordmerk Rijks**map** met lint blijft zoals het is", "Bouw de site opnieuw met de bouwscripts; geen handwerk in gegenereerde bestanden"],
           criteria: ["Kop en voet volgen de gids, licht en donker", "De gelijkheidscontrole laat alleen verschillen in kop en voet zien", "Toegankelijkheid gelijk of beter"],
           labels: ["ChatGPT Astra", "P2"] },
         { id: "R10-6", titel: "Gedeelde kop en voet in de nieuwe applicatie",
           verhaal: "Als ontwikkelaar wil ik kop en voet als hetzelfde onderdeel in Omnibus en de nieuwe Rijksmap, zodat een aanpassing in één keer overal klopt.",
           bron: `${BRON} Beide gebruiken straks dezelfde stack (besluit B-002).`,
           waar: ["Omnibus: `app/product-footer.tsx`", "De nieuwe Rijksmap-applicatie"],
-          aanpak: ["Hergebruik het onderdeel van Omnibus met de gedeelde tokens", "Alleen de tekst en links verschillen per tool"],
-          criteria: ["Beide tools gebruiken hetzelfde onderdeel of dezelfde code", "Een test bewaakt dat kop en voet de tokens gebruiken"],
+          aanpak: ["Hergebruik het onderdeel van Omnibus met de gedeelde tokens", "Het woordmerk is een onderdeel met twee delen tekst; alleen de tekst en links verschillen per tool"],
+          criteria: ["Beide tools gebruiken hetzelfde onderdeel of dezelfde code", "Omnibus toont het tweekleurige woordmerk met lint", "Een test bewaakt dat kop en voet de tokens gebruiken"],
           labels: ["ChatGPT Astra", "P2"] },
         { id: "R10-7", titel: "Automatische controle op afwijkingen in de huisstijl",
           verhaal: "Als beheerder wil ik dat een controle meldt wanneer een tool afwijkt van de huisstijl, zodat de tools niet weer uit elkaar groeien.",
