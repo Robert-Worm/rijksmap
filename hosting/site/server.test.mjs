@@ -3,11 +3,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { createServer } from "node:http";
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { spawn } from "node:child_process";
+import { once } from "node:events";
+import { createInterface } from "node:readline";
+import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
-import { maakHandler } from "./server.mjs";
+import { maakHandler, CSP } from "./server.mjs";
 import { comprimeer } from "./comprimeer.mjs";
 
 const groot = "<p>" + "Rijksmap ".repeat(400) + "</p>";
@@ -23,7 +27,7 @@ mkdirSync(join(root, ".git"));
 writeFileSync(join(root, ".git", "config"), "geheim");
 const resultaat = comprimeer(root);
 
-const server = createServer(maakHandler({ root, redirectHosts: ["rijksmap.nl"], publicOrigin: "https://www.rijksmap.nl" }));
+const server = createServer(maakHandler({ root, redirectHosts: ["rijksmap.nl"], publicOrigin: "https://www.rijksmap.nl", httpsOnly: true }));
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const basis = `http://127.0.0.1:${server.address().port}`;
 test.after(() => server.close());
@@ -87,8 +91,8 @@ test("een bekende ETag geeft 304", async () => {
 
 test("rijksmap.nl zonder www verwijst door naar het openbare adres", async () => {
   const { request } = await import("node:http");
-  const status = await new Promise((ok) => request({ host: "127.0.0.1", port: server.address().port, path: "/rapport/?a=1", headers: { host: "rijksmap.nl" } }, (res) => ok([res.statusCode, res.headers.location])).end());
-  assert.deepEqual(status, [301, "https://www.rijksmap.nl/rapport/?a=1"]);
+  const status = await new Promise((ok) => request({ host: "127.0.0.1", port: server.address().port, path: "/rapport/?a=1", headers: { host: "rijksmap.nl" } }, (res) => { res.resume(); ok([res.statusCode, res.headers.location, res.headers["content-security-policy"], res.headers["strict-transport-security"]]); }).end());
+  assert.deepEqual(status, [301, "https://www.rijksmap.nl/rapport/?a=1", CSP, "max-age=31536000"]);
 });
 
 test("de server logt geen bezoeken", async () => {
@@ -96,4 +100,88 @@ test("de server logt geen bezoeken", async () => {
   console.log = console.error = console.info = (...a) => regels.push(a.join(" "));
   try { await haal("/"); await haal("/bestaat-niet"); } finally { [console.log, console.error, console.info] = oud; }
   assert.deepEqual(regels, []);
+});
+
+test("de CSP-header blijft gelijk aan de meta-policy van de kaart", () => {
+  const html = readFileSync(new URL("../../index.html", import.meta.url), "utf8");
+  const meta = html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)"/);
+  assert.ok(meta, "de kaart heeft een CSP-meta");
+  assert.equal(CSP, meta[1]);
+});
+
+test("beveiligingsheaders blijven aanwezig bij succes, redirects, cache en fouten", async () => {
+  const etag = (await haal("/")).headers.get("etag");
+  const gevallen = [
+    ["/", {}, 200], ["/rapport/2024-voorbeeld/", {}, 200],
+    ["/rapport/2024-voorbeeld", {}, 301],
+    ["/", { headers: { "if-none-match": etag } }, 304],
+    ["/", { method: "HEAD" }, 200],
+    ["/bestaat-niet", {}, 404], ["/%E0%A4%A", {}, 404],
+    ["/", { method: "POST" }, 405],
+  ];
+  for (const [pad, opties, status] of gevallen) {
+    const r = await haal(pad, opties);
+    assert.equal(r.status, status, pad);
+    assert.equal(r.headers.get("content-security-policy"), CSP, pad);
+    assert.equal(r.headers.get("strict-transport-security"), "max-age=31536000", pad);
+    await r.arrayBuffer();
+  }
+});
+
+test("lokale HTTP krijgt geen HSTS, ook niet via een meegegeven proxyheader", async (t) => {
+  const lokaal = createServer(maakHandler({ root }));
+  t.after(() => lokaal.close());
+  await new Promise((r) => lokaal.listen(0, "127.0.0.1", r));
+  const r = await fetch(`http://127.0.0.1:${lokaal.address().port}/`, { headers: { "x-forwarded-proto": "https" } });
+  assert.equal(r.headers.get("strict-transport-security"), null);
+  assert.equal(r.headers.get("content-security-policy"), CSP);
+  await r.arrayBuffer();
+});
+
+test("een interne fout logt alleen de foutsoort en behoudt de beveiligingsheaders", async () => {
+  const regels = [];
+  const oud = console.error;
+  let status, headers;
+  const res = {
+    headersSent: false,
+    writeHead(code, waarden) { status = code; headers = waarden; },
+    end() {},
+  };
+  const req = {
+    get headers() { throw Object.assign(new Error("bezoek 192.0.2.16 /?zoek=vertrouwelijk"), { code: "EIO" }); },
+  };
+  console.error = (...a) => regels.push(a.join(" "));
+  try { await maakHandler({ root, httpsOnly: true })(req, res); }
+  finally { console.error = oud; }
+  assert.equal(status, 500);
+  assert.equal(headers["Content-Security-Policy"], CSP);
+  assert.equal(headers["Strict-Transport-Security"], "max-age=31536000");
+  assert.deepEqual(regels.map(JSON.parse), [{ event: "site_error", error: "EIO" }]);
+});
+
+test("het serverproces schrijft geen IP-adressen, verzoeken of bezoekersheaders naar stdout/stderr", async (t) => {
+  const kind = spawn(process.execPath, [fileURLToPath(new URL("./server.mjs", import.meta.url))], {
+    env: { ...process.env, SITE_ROOT: root, PORT: "0", HTTPS_ONLY: "1", PUBLIC_ORIGIN: "", REDIRECT_HOSTS: "" },
+    stdio: ["ignore", "pipe", "pipe"], windowsHide: true,
+  });
+  const gesloten = once(kind, "close");
+  t.after(async () => { if (kind.exitCode === null) kind.kill(); await gesloten; });
+  let uit = "", fouten = "";
+  kind.stdout.on("data", (d) => { uit += d; });
+  kind.stderr.on("data", (d) => { fouten += d; });
+  const regels = createInterface({ input: kind.stdout });
+  const [regel] = await once(regels, "line", { signal: AbortSignal.timeout(5000) });
+  const start = JSON.parse(regel);
+  assert.equal(start.event, "site_ready");
+  for (const pad of ["/?zoek=vertrouwelijk", "/onbekend?ip=192.0.2.16", "/%E0%A4%A"]) {
+    const r = await fetch(`http://127.0.0.1:${start.port}${pad}`, { headers: {
+      "x-forwarded-for": "192.0.2.16, 2001:db8::16", "user-agent": "prive-bezoeker", cookie: "prive=waarde",
+    } });
+    assert.equal(r.headers.get("strict-transport-security"), "max-age=31536000");
+    await r.arrayBuffer();
+  }
+  kind.kill();
+  await gesloten;
+  assert.deepEqual(uit.trim().split(/\r?\n/).map(JSON.parse), [start]);
+  assert.equal(fouten, "");
 });

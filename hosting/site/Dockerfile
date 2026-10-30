@@ -11,14 +11,17 @@
 FROM node:24.21.0-bookworm-slim@sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20 AS bouw
 WORKDIR /bron
 COPY . .
-RUN rm -rf .git && node hosting/site/comprimeer.mjs /bron
+RUN rm -rf .git && node hosting/site/comprimeer.mjs /bron && chmod -R a-w /bron
 
 FROM node:24.21.0-bookworm-slim@sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20
 ENV NODE_ENV=production
-COPY --from=bouw --chown=root:root --chmod=a-w /bron /app/site
-COPY --chown=root:root --chmod=a-w hosting/site/server.mjs /app/server.mjs
+COPY --from=bouw --chown=root:root /bron /app/site
+COPY --chown=root:root --chmod=0444 hosting/site/server.mjs /app/server.mjs
 USER 1000:1000
 EXPOSE 8080
 ENV SITE_ROOT=/app/site
+# Sliplane verzorgt HTTPS en de HTTP-redirect aan de publieke kant.
+# Voor een lokale HTTP-container: docker run -e HTTPS_ONLY=0 ...
+ENV HTTPS_ONLY=1
 # PORT geeft de host door. PUBLIC_ORIGIN en REDIRECT_HOSTS zijn optioneel (zie hosting/site/README.md).
 CMD ["node", "--max-old-space-size=64", "/app/server.mjs"]
