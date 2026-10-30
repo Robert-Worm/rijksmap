@@ -94,6 +94,9 @@ De kaart is nu één groot HTML-bestand (circa 10 MB) waarin alle data zit. Dat 
 ├── rijksmap-rfo.json           onderbouwingen bij de risicothema's (laadt de kaart op aanvraag)
 ├── sitemap.xml, robots.txt     voor zoekmachines
 ├── checksum.txt                controlegetal (SHA-256) van index.html
+├── bron/                       bronbestanden: rijksmap.html, registers, vaste bestanden
+├── bouw/                       bouwscripts; node bouw/bouw.mjs bouwt de site
+├── hosting/site/               de site als container voor Sliplane
 ├── docs/                       documentatie en leesprotocollen
 └── CNAME                       koppelt de site aan www.rijksmap.nl
 ```

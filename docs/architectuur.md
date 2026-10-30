@@ -43,13 +43,15 @@ De interface is gewoon JavaScript, zonder framework en zonder bouwstap in de bro
 
 ## Bouwen en publiceren
 
-De bronversie van de kaart heet `rijksmap.html`: data, stijl en logica in één bestand. De bouwstap `node maak-dist.mjs --zip` maakt daar het publicatiepakket van:
+De bronversie van de kaart staat in [`bron/rijksmap.html`](../bron/): data, stijl en logica in één bestand. De bouwstap `node bouw/bouw.mjs --zip` maakt daar in een tijdelijke werkmap het publicatiepakket van, met de scripts in [`bouw/`](../bouw/README.md):
 
 1. **Eerst controleren, dan bouwen.** Het script stopt bij een JavaScript-fout of een stijlfout (zoals een em-dash), zodat er nooit een kapotte build klaarstaat.
 2. **Pagina's genereren** met `maak-detailpaginas.mjs`, `maak-subpaginas.mjs` en `pagina-shell.mjs`, plus de sitemap.
 3. **Samenhang bewaken.** Dode verwijzingen, verouderde kopieën en ontbrekende bestanden breken de build.
 4. **Schoon opbouwen.** `dist/` wordt elke keer volledig opnieuw gemaakt, zodat een verwijderd bestand niet kan blijven rondslingeren.
 5. **Inpakken** als `rijksmap-dist.zip`, het pakket dat ook bij de [releases](../../../releases) staat.
+
+Met `node bouw/bouw.mjs --controleer` vergelijkt de build elk gebouwd bestand met de gepubliceerde site. Op 30 oktober 2026 waren alle 9.394 bestanden gelijk.
 
 ## Waarom één bestand, en waarom dat moet veranderen
 

@@ -1,0 +1,7 @@
+/*
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), interest-cohort=()
+  Content-Security-Policy: default-src 'none'; script-src 'unsafe-inline' https://analytics.tiiny.net https://analytics.tiiny.site; style-src 'unsafe-inline'; img-src 'self' data: https://analytics.tiiny.net https://analytics.tiiny.site; font-src data:; connect-src 'self' https://analytics.tiiny.net https://analytics.tiiny.site; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
