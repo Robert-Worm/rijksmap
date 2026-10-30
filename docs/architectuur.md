@@ -70,6 +70,8 @@ De [routekaart](routekaart.md) beschrijft de overstap naar een applicatie met da
 
 ## Hosting
 
-GitHub Pages publiceert de hoofdmap van de `main`-branch. `CNAME` koppelt die aan `www.rijksmap.nl`, en `rijksmap.nl` stuurt door naar het www-adres. `.nojekyll` zorgt dat bestanden ongewijzigd worden geserveerd, ook `.well-known/`. GitHub verzorgt de HTTPS-certificaten.
+GitHub Pages publiceert de hoofdmap van de branch `pages`. Dat is de live versie, bevroren op 30 oktober 2026, zodat `main` vrij is voor de nieuwe applicatie (zie [besluit B-007](beheer/besluiten.md#b-007)). Een wijziging aan de live site gaat daarom naar `pages`, niet naar `main`. `CNAME` koppelt de site aan `www.rijksmap.nl`, en `rijksmap.nl` stuurt door naar het www-adres. `.nojekyll` zorgt dat bestanden ongewijzigd worden geserveerd, ook `.well-known/`. GitHub verzorgt de HTTPS-certificaten.
 
 GitHub Pages ondersteunt geen eigen HTTP-headers. Het Content Security Policy van de site staat daarom als `<meta http-equiv>` in de pagina zelf.
+
+Dezelfde site draait ook op Sliplane, als service `rijksmap-site` op [rijksmap-site.sliplane.app](https://rijksmap-site.sliplane.app), naast Omnibus op dezelfde server. Die versie bouwt vanaf `main` en rolt elke push automatisch uit. Zie [de huidige site in een container](../hosting/site/README.md). www.rijksmap.nl wijst nog naar GitHub Pages; de overstap staat in de [routekaart](routekaart.md).
