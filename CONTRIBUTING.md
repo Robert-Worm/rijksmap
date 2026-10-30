@@ -15,6 +15,10 @@ Dit is de waardevolste bijdrage. Bijvoorbeeld:
 
 Vuistregel: **de officiële bron beslist.** Spreken bronnen elkaar tegen, dan wint de meest recente officiële publicatie.
 
+## Een rapport aandragen
+
+Mist er een openbaar audit-, toezicht- of onderzoeksrapport over de rijksoverheid? [Draag het aan](../../issues/new?template=rapport-aandragen.yml) met de link naar de officiële publicatie, de titel, de uitgever en de datum. De beheerder controleert of het openbaar is en binnen de Rijksmap valt. De Rijksmap neemt het rapport niet over, maar linkt naar de publicatie van de uitgever.
+
 ## Een fout in de site melden
 
 [Open een foutmelding](../../issues/new?template=bug-report.yml) met het adres van de pagina, wat je deed, wat je verwachtte, en je browser en apparaat. Een schermafbeelding helpt.

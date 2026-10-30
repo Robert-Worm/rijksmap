@@ -25,6 +25,7 @@ const LABELS = [
   { name: "epic", color: "5319e7", description: "Groot doel, opgedeeld in user stories" },
   { name: "story", color: "0e8a16", description: "User story: een afgebakend stuk werk" },
   { name: "transitie", color: "fbca04", description: "Transitie naar database, applicatie en Sliplane" },
+  { name: "rapportvoorstel", color: "0e8a16", description: "Een bezoeker draagt een rapport aan via het formulier" },
   { name: "huisstijl", color: "c5def5", description: "Eén huisstijl voor Omnibus, de Rijksmap en volgende tools" },
   { name: "werkvolgorde", color: "ededed", description: "Het automatische overzicht van de werkvolgorde" },
   { name: "Opus 5.5", color: "d4a373", description: "Licht werk voor Claude Opus 5.5: pagina's, epics en stories, besluiten" },
