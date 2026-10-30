@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { createServer } from "node:http";
+import { connect } from "node:net";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
@@ -180,8 +181,36 @@ test("het serverproces schrijft geen IP-adressen, verzoeken of bezoekersheaders 
     assert.equal(r.headers.get("strict-transport-security"), "max-age=31536000");
     await r.arrayBuffer();
   }
+  // Rechtstreeks TCP: fetch normaliseert ongeldige URL's en headers vooraf.
+  const ruwVerzoek = (verzoek) => new Promise((ok, mis) => {
+    const socket = connect(start.port, "127.0.0.1", () => socket.write(verzoek));
+    let antwoord = "";
+    socket.setEncoding("utf8");
+    socket.setTimeout(5000, () => socket.destroy(new Error("HTTP-test verstreken")));
+    socket.on("data", (deel) => { antwoord += deel; });
+    socket.on("error", mis);
+    socket.on("end", () => ok(antwoord));
+  });
+  // Node kan antwoorden voordat onze handler wordt aangeroepen. Die antwoorden
+  // hebben geen applicatieheaders; ook hierbij mogen geen bezoekgegevens lekken.
+  for (const [koppen, status] of [
+    ["Ongeldige header: prive=192.0.2.16", 400],
+    ["Cookie: prive=192.0.2.16;" + "x".repeat(20_000), 431],
+    ["Expect: prive-192.0.2.16", 417],
+  ]) {
+    const antwoord = await ruwVerzoek(`GET /?zoek=vertrouwelijk HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n${koppen}\r\n\r\n`);
+    assert.match(antwoord, new RegExp(`^HTTP/1.1 ${status} `));
+    assert.doesNotMatch(antwoord, /content-security-policy:|strict-transport-security:|vertrouwelijk|192\.0\.2\.16/i);
+  }
+  // Een ongeldige absolute URL bereikt wel de handler en veroorzaakt een echte
+  // ERR_INVALID_URL. De fout bevat invoer, maar alleen de code mag in stderr.
+  const fout = await ruwVerzoek("GET http://[192.0.2.16/?zoek=vertrouwelijk HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n");
+  assert.match(fout, /^HTTP\/1.1 500 /);
+  assert.ok(fout.includes(`Content-Security-Policy: ${CSP}\r\n`));
+  assert.match(fout, /Strict-Transport-Security: max-age=31536000\r\n/);
+  assert.doesNotMatch(fout, /vertrouwelijk|192\.0\.2\.16/);
   kind.kill();
   await gesloten;
   assert.deepEqual(uit.trim().split(/\r?\n/).map(JSON.parse), [start]);
-  assert.equal(fouten, "");
+  assert.deepEqual(fouten.trim().split(/\r?\n/).map(JSON.parse), [{ event: "site_error", error: "ERR_INVALID_URL" }]);
 });
