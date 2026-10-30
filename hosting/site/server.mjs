@@ -12,6 +12,7 @@
 //   REDIRECT_HOSTS  hostnamen die naar PUBLIC_ORIGIN doorverwijzen, gescheiden door komma's
 //                   (bijvoorbeeld rijksmap.nl)
 //   PUBLIC_ORIGIN   het openbare adres, bijvoorbeeld https://www.rijksmap.nl (zonder / aan het eind)
+//   HTTPS_ONLY      1 als de host publiek uitsluitend HTTPS serveert (HSTS inschakelen)
 import { createServer } from "node:http";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
@@ -41,8 +42,10 @@ export const TYPES = {
 };
 const TYPE_ZONDER_EXTENSIE = "application/octet-stream";
 
-/** Vaste headers op elk antwoord. */
-const BASIS = { "X-Content-Type-Options": "nosniff" };
+// Gelijk aan de CSP-meta van de kaart. De test bewaakt dat ze gelijk blijven.
+// Bestaande, strengere meta-policies op detailpagina's blijven daarnaast gelden.
+export const CSP = "default-src 'none'; script-src 'unsafe-inline' https://analytics.tiiny.net https://analytics.tiiny.site; style-src 'unsafe-inline'; img-src 'self' data: https://analytics.tiiny.net https://analytics.tiiny.site; font-src data:; connect-src 'self' https://analytics.tiiny.net https://analytics.tiiny.site; base-uri 'none'; form-action 'none'; upgrade-insecure-requests";
+const BASIS = { "X-Content-Type-Options": "nosniff", "Content-Security-Policy": CSP };
 
 async function bestand(pad) {
   try { const s = await stat(pad); return s; } catch { return null; }
@@ -50,21 +53,24 @@ async function bestand(pad) {
 
 /**
  * Maakt de request-handler. Los van het luisteren, zodat de tests hem kunnen starten.
- * @param {{ root: string, redirectHosts?: string[], publicOrigin?: string }} opties
+ * @param {{ root: string, redirectHosts?: string[], publicOrigin?: string, httpsOnly?: boolean }} opties
  */
-export function maakHandler({ root, redirectHosts = [], publicOrigin = "" }) {
+export function maakHandler({ root, redirectHosts = [], publicOrigin = "", httpsOnly = false }) {
   const wortel = resolve(root);
+  // Alleen de expliciete hostinginstelling beslist, nooit een bezoekersheader.
+  const basis = { ...BASIS, ...(httpsOnly ? { "Strict-Transport-Security": "max-age=31536000" } : {}) };
+  const nietGevonden = (res) => antwoordNietGevonden(res, basis);
   const doorverwijzen = new Set(redirectHosts.map((h) => h.trim().toLowerCase()).filter(Boolean));
 
   return async function handler(req, res) {
     try {
       const host = String(req.headers.host || "").split(":")[0].toLowerCase();
       if (publicOrigin && doorverwijzen.has(host)) {
-        res.writeHead(301, { ...BASIS, Location: publicOrigin + (req.url || "/") });
+        res.writeHead(301, { ...basis, Location: publicOrigin + (req.url || "/") });
         return res.end();
       }
       if (req.method !== "GET" && req.method !== "HEAD") {
-        res.writeHead(405, { ...BASIS, Allow: "GET, HEAD", "Content-Type": "text/plain; charset=utf-8" });
+        res.writeHead(405, { ...basis, Allow: "GET, HEAD", "Content-Type": "text/plain; charset=utf-8" });
         return res.end("Methode niet toegestaan\n");
       }
 
@@ -80,7 +86,7 @@ export function maakHandler({ root, redirectHosts = [], publicOrigin = "" }) {
       let bestandspad = doel;
       if (info?.isDirectory()) {
         if (!url.pathname.endsWith("/")) {
-          res.writeHead(301, { ...BASIS, Location: url.pathname + "/" + url.search });
+          res.writeHead(301, { ...basis, Location: url.pathname + "/" + url.search });
           return res.end();
         }
         bestandspad = join(doel, "index.html");
@@ -90,7 +96,7 @@ export function maakHandler({ root, redirectHosts = [], publicOrigin = "" }) {
 
       const type = TYPES[extname(bestandspad).toLowerCase()] || TYPE_ZONDER_EXTENSIE;
       const etag = `"${info.size.toString(16)}-${Math.floor(info.mtimeMs).toString(16)}"`;
-      const headers = { ...BASIS, "Content-Type": type, "Cache-Control": "max-age=600", ETag: etag, "Last-Modified": info.mtime.toUTCString() };
+      const headers = { ...basis, "Content-Type": type, "Cache-Control": "max-age=600", ETag: etag, "Last-Modified": info.mtime.toUTCString() };
 
       if (req.headers["if-none-match"] === etag) { res.writeHead(304, headers); return res.end(); }
 
@@ -109,14 +115,14 @@ export function maakHandler({ root, redirectHosts = [], publicOrigin = "" }) {
     } catch (fout) {
       // Alleen de soort fout, nooit het adres of de bezoeker.
       console.error(JSON.stringify({ event: "site_error", error: fout?.code || fout?.name || "onbekend" }));
-      if (!res.headersSent) { res.writeHead(500, { ...BASIS, "Content-Type": "text/plain; charset=utf-8" }); res.end("Er ging iets mis\n"); }
+      if (!res.headersSent) { res.writeHead(500, { ...basis, "Content-Type": "text/plain; charset=utf-8" }); res.end("Er ging iets mis\n"); }
       else res.destroy();
     }
   };
 }
 
-function nietGevonden(res) {
-  res.writeHead(404, { ...BASIS, "Content-Type": "text/html; charset=utf-8" });
+function antwoordNietGevonden(res, basis) {
+  res.writeHead(404, { ...basis, "Content-Type": "text/html; charset=utf-8" });
   res.end('<!doctype html><html lang="nl"><meta charset="utf-8"><title>Pagina niet gevonden · Rijksmap</title>'
     + '<p>Deze pagina bestaat niet. <a href="/">Naar de Rijksmap</a></p></html>\n');
 }
@@ -125,9 +131,11 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   const port = Number(process.env.PORT || 8080);
   const handler = maakHandler({
     root: process.env.SITE_ROOT || process.cwd(),
+    httpsOnly: process.env.HTTPS_ONLY === "1",
     redirectHosts: (process.env.REDIRECT_HOSTS || "").split(","),
     publicOrigin: (process.env.PUBLIC_ORIGIN || "").replace(/\/+$/, ""),
   });
-  createServer(handler).listen(port, "0.0.0.0", () => console.log(JSON.stringify({ event: "site_ready", port })));
+  const server = createServer(handler);
+  server.listen(port, "0.0.0.0", () => console.log(JSON.stringify({ event: "site_ready", port: server.address().port })));
   for (const sig of ["SIGTERM", "SIGINT"]) process.on(sig, () => process.exit(0));
 }
