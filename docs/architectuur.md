@@ -1,6 +1,6 @@
 # Architectuur
 
-Voor de toekomstige beheeromgeving staat bij [issue #43 een ontwerpvoorstel voor inlog, rollen en de wijzigingsroute](beheer/ontwerp-43-autorisatie.md). Dit voorstel wacht op het besluit van de beheerder en een onafhankelijke securityreview. Het beschrijft geen aanwezige beheerfuncties.
+Voor de toekomstige beheeromgeving staat bij [issue #43 een ontwerpvoorstel voor inlog, rollen en de wijzigingsroute](beheer/ontwerp-43-autorisatie.md). Het ontwerp is onafhankelijk beoordeeld en wacht op het besluit van de beheerder. Het beschrijft geen aanwezige beheerfuncties; de implementatie en activering zijn nog niet getoetst.
 
 De Rijksmap is een statische website. Er draait geen code op een server en er is geen database. Alles wat een bezoeker nodig heeft, staat in bestanden die GitHub Pages ongewijzigd uitserveert.
 
