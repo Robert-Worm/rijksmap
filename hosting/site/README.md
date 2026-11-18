@@ -54,6 +54,8 @@ De server logt geen bezoeken en geen IP-adressen. Hij schrijft alleen één rege
 
 ## Testen
 
+De gepubliceerde Pages- en Sliplane-versie vergelijken kan met [de gelijkheidscontrole](VERGELIJKING.md). Die bewaart de status en het controlegetal per adres, met een begrensd tempo.
+
 ```text
 node --test hosting/site/server.test.mjs
 ```
