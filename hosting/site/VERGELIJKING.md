@@ -13,8 +13,12 @@ bovenliggende map al bestaat:
 node hosting/site/vergelijk-hosts.mjs --output D:/Workfolder/rijksmap-vergelijking-20261118
 ```
 
-Standaard vergelijkt dit `https://www.rijksmap.nl` (nu Pages) met
-`https://rijksmap-site.sliplane.app`. Het script leest beide gepubliceerde sitemaps.
+Standaard vergelijkt dit `https://www.rijksmap.nl` **rechtstreeks via GitHub Pages**
+met `https://rijksmap-site.sliplane.app`. Voor de Pages-verbinding gebruikt het
+script de DNS-adressen van `robert-worm.github.io`. Het gepubliceerde adres in de
+HTTP Host-header, TLS SNI en certificaatcontrole blijft `www.rijksmap.nl`.
+Zo werkt de vergelijking ook nadat de openbare DNS van www naar Sliplane wijst.
+De DNS zelf wordt niet gewijzigd. Het script leest beide gepubliceerde sitemaps.
 Het gebruikt de unie van hun adressen en meldt welke adressen maar in één sitemap
 staan. Er wordt geen lokaal bestand als bewijs voor een online pagina gebruikt.
 
@@ -41,10 +45,20 @@ afzonderlijk bereikbare hosts. De canonical-origin is het adres dat in de
 Origins moeten HTTPS gebruiken en mogen geen pad, query of inlog bevatten.
 Alleen lokale testservers mogen HTTP gebruiken.
 
-Na een DNS-overstap is `www.rijksmap.nl` niet meer vanzelf de Pages-kant.
-Controleer dan eerst dat het gekozen Pages-adres nog echt Pages serveert.
-Een Pages-adres dat doorverwijst naar de andere host wordt bewust geweigerd.
-De controle wijzigt geen Host-header en omzeilt geen TLS-controle.
+Bij een andere `--pages`-origin gebruikt het script standaard diens eigen DNS.
+Met `--pages-connect-host` kun je de verbindingshost expliciet kiezen, bijvoorbeeld
+`robert-worm.github.io`. Alleen een DNS-hostnaam is toegestaan, zonder poort of pad.
+Deze keuze geldt ook voor redirects binnen de Pages-origin. De HTTP Host-header
+en TLS SNI blijven altijd bij de gepubliceerde URL. Certificaatcontrole blijft aan;
+als Pages het custom domein of zijn certificaat niet meer heeft, faalt de controle.
+
+Controleer in het verslag steeds `connectHost`, `remoteAddress`, `server` en
+`tlsAuthorized`. Twee verschillende openbare hostnamen bewijzen op zichzelf niet
+dat je twee verschillende hostingomgevingen meet. Op 18 november 2026 bleek
+`www.rijksmap.nl` al naar `rijksmap-site.sliplane.app` te verwijzen, anders dan de
+eerdere beschrijving in #19. De rechtstreekse Pages-verbinding voorkomt dat beide
+kanten daardoor ongemerkt Sliplane meten. Een redirect naar de andere host wordt
+nog steeds geweigerd.
 
 ## Wat wordt vergeleken?
 
@@ -115,7 +129,7 @@ Elke uitvoermap bevat:
 
 | Bestand | Inhoud |
 | --- | --- |
-| `resultaten.jsonl` | Startgegevens, sitemapmetingen, inventaris, één regel per adres en een afsluitende samenvatting |
+| `resultaten.jsonl` | Startgegevens, sitemapmetingen, inventaris, één regel per adres met serveradres en TLS-uitkomst, en een afsluitende samenvatting |
 | `samenvatting.json` | Volledigheid, aantallen, afwijkingen, stopreden, grenzen, Node-versie, broncommit en SHA-256 van het script |
 | `adressen.json` | De volledige, vaste volgorde voor deze meting |
 | `pages-sitemap.xml`, `sliplane-sitemap.xml` | De opgehaalde sitemaps, als ophalen is gelukt |

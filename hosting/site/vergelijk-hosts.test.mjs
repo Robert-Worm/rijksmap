@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { gzipSync } from 'node:zlib';
+import { gzipSync, brotliCompressSync, deflateSync } from 'node:zlib';
 import { mkdtemp, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -55,6 +55,39 @@ test('gzip en ongecomprimeerde bytes zijn gelijk; herkenbare User-Agent', async 
   const b = await probe.get(base, '/plain');
   assert.equal(a.bytes, body.length);
   assert.equal(compare(a, b).equal, true);
+});
+
+test('verbindingshost verandert DNS, maar behoudt het gepubliceerde Host-adres', async t => {
+  let receivedHost;
+  const base = await server(t, (req, res) => { receivedHost = req.headers.host; res.end('inhoud'); });
+  const published = base.replace('127.0.0.1', 'localhost');
+  const probe = client({ pages: published, pagesConnectHost: '127.0.0.1' });
+  t.after(() => probe.close());
+  const result = await probe.get(published, '/');
+  assert.equal(result.status, 200);
+  assert.equal(receivedHost, new URL(published).host);
+  assert.equal(result.connectHost, '127.0.0.1');
+  assert.equal(result.remoteAddress, '127.0.0.1');
+  assert.equal(result.tlsAuthorized, null);
+  for (const target of ['https://example.org', 'user@example.org', 'example.org:443']) {
+    assert.throws(() => parseArgs(['--pages-connect-host', target]));
+  }
+});
+
+test('brotli en deflate worden uitgepakt; kapotte of onbekende compressie is een fout', async t => {
+  const body = Buffer.from('Te vergelijken inhoud.');
+  const base = await server(t, (req, res) => {
+    const encoding = req.url.slice(1);
+    res.setHeader('Content-Encoding', encoding);
+    res.end(encoding === 'br' ? brotliCompressSync(body) : encoding === 'deflate' ? deflateSync(body) : body);
+  });
+  const probe = client();
+  const br = await probe.get(base, '/br');
+  const deflate = await probe.get(base, '/deflate');
+  assert.equal(br.bytes, body.length);
+  assert.equal(compare(br, deflate).equal, true);
+  assert.ok((await probe.get(base, '/gzip')).error);
+  assert.equal((await probe.get(base, '/unsupported')).error, 'onbekende-transportcompressie');
 });
 
 test('status en inhoud apart zichtbaar; twee gelijke 404s zijn nooit groen', async t => {

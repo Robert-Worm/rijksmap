@@ -5,6 +5,11 @@ import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
+import { Agent as HttpsAgent, request as httpsRequest } from 'node:https';
+import { Agent as HttpAgent, request as httpRequest } from 'node:http';
+import { lookup } from 'node:dns';
+import { pipeline } from 'node:stream';
+import { createGunzip, createBrotliDecompress, createInflate } from 'node:zlib';
 
 export const USER_AGENT = 'Rijksmap-gelijkheidscontrole/1.0 (info@rijksmap.nl)';
 // Publicatiebestanden buiten de sitemap, gecontroleerd tegen de bronversie.
@@ -19,6 +24,7 @@ export const DEFAULTS = {
   pages: 'https://www.rijksmap.nl',
   sliplane: 'https://rijksmap-site.sliplane.app',
   canonical: 'https://www.rijksmap.nl',
+  pagesConnectHost: 'robert-worm.github.io',
   delayMs: 250, timeoutMs: 15000, maxBytes: 32 * 1024 * 1024,
   maxTotalBytes: 4 * 1024 ** 3, maxUrls: 15000, maxDurationMs: 4 * 60 * 60 * 1000,
   maxRedirects: 3, limit: 0,
@@ -85,19 +91,64 @@ export function compare(left, right) {
   return { equal: reasons.length === 0, reasons };
 }
 
+async function responseFrom(url, agent, signal) {
+  return new Promise((resolveResponse, reject) => {
+    const request = url.protocol === 'https:' ? httpsRequest : httpRequest;
+    const req = request(url, {
+      agent, signal, headers: { 'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip, br, deflate' },
+    }, response => {
+      const metadata = {
+        remoteAddress: response.socket.remoteAddress,
+        tlsAuthorized: url.protocol === 'https:' ? response.socket.authorized : null,
+        server: response.headers.server || null,
+      };
+      const headers = new Headers();
+      for (const [key, value] of Object.entries(response.headers)) {
+        if (value !== undefined) headers.set(key, Array.isArray(value) ? value.join(', ') : value);
+      }
+      const encoding = headers.get('content-encoding')?.toLowerCase();
+      const decoder = { gzip: createGunzip, br: createBrotliDecompress, deflate: createInflate }[encoding];
+      let body = response;
+      if (!REDIRECTS.has(response.statusCode) && decoder) {
+        body = decoder();
+        pipeline(response, body, error => { if (error) body.destroy(error); });
+      } else if (!REDIRECTS.has(response.statusCode) && encoding && encoding !== 'identity') {
+        response.destroy();
+        reject(new Error('onbekende-transportcompressie'));
+        return;
+      }
+      resolveResponse({ status: response.statusCode, headers, body, ...metadata });
+    });
+    req.once('error', reject);
+    req.end();
+  });
+}
+
 export function makeClient(options, signal) {
   let totalBytes = 0;
   let requests = 0;
   let stopReason = null;
   const nextAt = new Map();
+  const agents = new Map();
   return {
     stats: () => ({ requests, totalBytes, stopReason }),
+    close: () => { for (const agent of agents.values()) agent.destroy(); },
     async get(base, path, capture = false) {
       const started = Date.now();
       const result = { url: base + path, checkedAt: iso(), status: null, redirects: [], sha256: null, bytes: 0 };
       const chunks = [];
       const hash = createHash('sha256');
       let url = new URL(path, base);
+      const connectHost = base === options.pages ? options.pagesConnectHost : null;
+      result.connectHost = connectHost || url.hostname;
+      if (!agents.has(base)) {
+        const Agent = url.protocol === 'https:' ? HttpsAgent : HttpAgent;
+        // Alleen DNS voor de verbinding verandert. Host, SNI en TLS-validatie
+        // blijven bij het gepubliceerde adres; geen uitgeschakelde certificaatcontrole.
+        agents.set(base, new Agent({ keepAlive: true, maxSockets: 1,
+          ...(connectHost ? { lookup: (_hostname, lookupOptions, callback) => lookup(connectHost, lookupOptions, callback) } : {}),
+        }));
+      }
       try {
         for (let hop = 0; ; hop++) {
           if (stopReason) throw new Error(stopReason);
@@ -105,19 +156,19 @@ export function makeClient(options, signal) {
           signal.throwIfAborted();
           nextAt.set(base, Date.now() + options.delayMs);
           requests++;
-          const response = await fetch(url, {
-            redirect: 'manual', signal: AbortSignal.any([signal, AbortSignal.timeout(options.timeoutMs)]),
-            headers: { 'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip, br, deflate' },
-          });
+          const response = await responseFrom(url, agents.get(base), AbortSignal.any([signal, AbortSignal.timeout(options.timeoutMs)]));
           result.status = response.status;
           result.finalUrl = url.href;
+          result.remoteAddress = response.remoteAddress;
+          result.tlsAuthorized = response.tlsAuthorized;
+          result.server = response.server;
           if (response.status === 429 || response.status === 503) {
             stopReason = `host-vraagt-rust-${response.status}`;
             result.retryAfter = response.headers.get('retry-after');
           }
           if (REDIRECTS.has(response.status)) {
             const location = response.headers.get('location');
-            await response.body?.cancel();
+            response.body.destroy();
             if (!location) throw new Error('redirect-zonder-location');
             const target = new URL(location, url);
             const sameOrigin = target.origin === base && !target.username && !target.password;
@@ -129,7 +180,7 @@ export function makeClient(options, signal) {
           }
           result.contentType = response.headers.get('content-type');
           result.contentEncoding = response.headers.get('content-encoding');
-          // fetch pakt transportcompressie uit. Hash die bytes zonder HTML-normalisatie.
+          // Transportcompressie is uitgepakt. Hash die bytes zonder HTML-normalisatie.
           if (response.body) for await (const chunk of response.body) {
             totalBytes += chunk.length;
             result.bytes += chunk.length;
@@ -146,7 +197,7 @@ export function makeClient(options, signal) {
           break;
         }
       } catch (error) {
-        result.error = signal.aborted ? 'controle-afgebroken' : (error.cause?.code || error.message);
+        result.error = signal.aborted ? 'controle-afgebroken' : (error.cause?.code || error.code || error.message);
         result.sha256 = null;
       }
       result.durationMs = Date.now() - started;
@@ -158,6 +209,10 @@ export function makeClient(options, signal) {
 function validate(options) {
   for (const key of ['pages', 'sliplane', 'canonical']) options[key] = origin(options[key]);
   if (options.pages === options.sliplane) throw new Error('De twee hosts moeten verschillen.');
+  if (options.pagesConnectHost !== null &&
+      (typeof options.pagesConnectHost !== 'string' || !/^[a-z0-9]+(?:[.-][a-z0-9]+)*$/i.test(options.pagesConnectHost))) {
+    throw new Error('pagesConnectHost moet een DNS-hostnaam zonder poort, pad of inlog zijn.');
+  }
   const ranges = {
     delayMs: [250, 60000], timeoutMs: [100, 60000], maxBytes: [1, 64 * 1024 ** 2],
     maxTotalBytes: [1, 8 * 1024 ** 3], maxUrls: [1, 50000],
@@ -172,6 +227,8 @@ function validate(options) {
 
 export async function run(input, { signal = new AbortController().signal, progress = () => {} } = {}) {
   const options = { ...DEFAULTS, ...input };
+  // Aangepaste testhosts gebruiken hun eigen DNS, tenzij expliciet anders gevraagd.
+  if (input.pages && origin(input.pages) !== DEFAULTS.pages && input.pagesConnectHost === undefined) options.pagesConnectHost = null;
   validate(options);
   if (!options.output) throw new Error('Een nieuwe uitvoermap is verplicht.');
   const output = resolve(options.output);
@@ -232,6 +289,7 @@ export async function run(input, { signal = new AbortController().signal, progre
   } catch (error) {
     summary.stopReason = combined.aborted ? (signal.aborted ? 'onderbroken' : 'tijdslimiet') : error.message;
   } finally {
+    client.close();
     summary.finishedAt = iso();
     summary.network = client.stats();
     summary.exitCode = !summary.complete ? 2 : summary.verdict === 'gelijk' ? 0 : 1;
@@ -249,6 +307,7 @@ export function parseArgs(args) {
     '--delay-ms': 'delayMs', '--timeout-ms': 'timeoutMs', '--max-bytes': 'maxBytes',
     '--max-total-bytes': 'maxTotalBytes', '--max-urls': 'maxUrls', '--max-duration-ms': 'maxDurationMs',
     '--max-redirects': 'maxRedirects', '--limit': 'limit',
+    '--pages-connect-host': 'pagesConnectHost',
   };
   for (let i = 0; i < args.length; i += 2) {
     const key = keys[args[i]];
